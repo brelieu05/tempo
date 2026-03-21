@@ -895,6 +895,20 @@ body {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.reminder-form .settings-time-input {
+  flex-shrink: 0;
+}
+
+.reminder-form .reminder-label-input {
+  flex: 1;
+  min-width: 120px;
+}
+
+.reminder-form .settings-save-btn {
+  flex-shrink: 0;
 }
 
 .reminder-label-input {
