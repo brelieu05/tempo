@@ -1,0 +1,699 @@
+:root {
+  --bg: #F5F0E8;
+  --surface: #FFFFFF;
+  --surface-2: #FAF7F2;
+  --border: #E8E0D4;
+  --text: #2D2A26;
+  --text-muted: #8A8278;
+  --orange: #F97316;
+  --orange-hover: #EA580C;
+  --orange-light: #FFEDD5;
+  --orange-border: #FED7AA;
+  --level-0: #EDE8DF;
+  --level-1: #FED7AA;
+  --level-2: #FB923C;
+  --level-3: #F97316;
+  --level-4: #C2410C;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── App Layout ── */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+.app-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+
+.header-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-icon {
+  color: var(--orange);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.header-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.header-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ── Main ── */
+.app-main {
+  flex: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 28px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── Section headers ── */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.graph-card {
+  padding: 20px 20px 16px;
+  overflow: hidden;
+}
+
+/* ── Trackers Grid ── */
+.trackers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Tracker Card (shared by HabitTracker + TodoList) ── */
+.tracker-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tracker-card-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tracker-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.tracker-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--orange-light);
+  color: var(--orange-hover);
+  border: 1px solid var(--orange-border);
+  white-space: nowrap;
+}
+
+.badge-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ── Habit / Todo List Body ── */
+.tracker-list {
+  flex: 1;
+  padding: 8px 0;
+  min-height: 60px;
+}
+
+.empty-state {
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.empty-state-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+/* ── Habit Row ── */
+.habit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+  position: relative;
+}
+
+.habit-row:last-child {
+  border-bottom: none;
+}
+
+.habit-row:hover {
+  background: var(--surface-2);
+}
+
+.habit-toggle {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  font-size: 13px;
+  color: transparent;
+}
+
+.habit-toggle:hover {
+  border-color: var(--orange);
+  background: var(--orange-light);
+  color: var(--orange);
+}
+
+.habit-toggle.done {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: white;
+}
+
+.habit-toggle.done:hover {
+  background: var(--orange-hover);
+  border-color: var(--orange-hover);
+}
+
+.habit-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.habit-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.habit-name.done {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--orange);
+  background: var(--orange-light);
+  border: 1px solid var(--orange-border);
+  border-radius: 20px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.streak-icon {
+  font-size: 11px;
+}
+
+.delete-btn {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  opacity: 0;
+  transition: all 0.12s;
+}
+
+.habit-row:hover .delete-btn,
+.todo-row:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #EF4444;
+}
+
+/* ── Todo Row ── */
+.todo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+  position: relative;
+}
+
+.todo-row:last-child {
+  border-bottom: none;
+}
+
+.todo-row:hover {
+  background: var(--surface-2);
+}
+
+.todo-checkbox {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  font-size: 11px;
+  color: transparent;
+}
+
+.todo-checkbox:hover {
+  border-color: var(--orange);
+  background: var(--orange-light);
+}
+
+.todo-checkbox.checked {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: white;
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.todo-text.done {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* ── Add Input Area ── */
+.add-input-area {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.add-input {
+  flex: 1;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.add-input::placeholder {
+  color: var(--text-muted);
+}
+
+.add-input:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+}
+
+.add-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: var(--orange);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.add-btn:hover {
+  background: var(--orange-hover);
+}
+
+.add-btn:active {
+  transform: scale(0.94);
+}
+
+/* ── Celebration ── */
+.celebration-banner {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #FFEDD5, #FEF3C7);
+  border-top: 1px solid var(--orange-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--orange-hover);
+}
+
+/* ── Contribution Graph ── */
+.graph-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+.graph-inner {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: max-content;
+}
+
+.graph-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.graph-month-row {
+  display: flex;
+  gap: 2px;
+}
+
+.graph-month-label {
+  /* Width must match .graph-cell width so labels sit above the right column */
+  width: 11px;
+  flex-shrink: 0;
+  overflow: visible;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.graph-body {
+  display: flex;
+  gap: 6px;
+}
+
+.graph-day-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 0;
+}
+
+.graph-day-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  height: 11px;
+  line-height: 11px;
+  width: 26px;
+  text-align: right;
+  padding-right: 6px;
+}
+
+.graph-columns {
+  display: flex;
+  gap: 2px;
+}
+
+.graph-week-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.graph-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: opacity 0.1s, transform 0.1s;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.graph-cell:hover {
+  opacity: 0.85;
+  transform: scale(1.2);
+}
+
+.graph-cell.empty {
+  cursor: default;
+}
+
+.graph-cell.empty:hover {
+  opacity: 1;
+  transform: none;
+}
+
+.graph-cell.future {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.graph-cell.future:hover {
+  opacity: 0.4;
+  transform: none;
+}
+
+/* Cell color levels */
+.graph-cell[data-level="0"] { background: var(--level-0); }
+.graph-cell[data-level="1"] { background: var(--level-1); }
+.graph-cell[data-level="2"] { background: var(--level-2); }
+.graph-cell[data-level="3"] { background: var(--level-3); }
+.graph-cell[data-level="4"] { background: var(--level-4); }
+
+/* ── Tooltip ── */
+.graph-tooltip {
+  position: fixed;
+  background: var(--text);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translate(-50%, -100%);
+  margin-top: -8px;
+}
+
+.graph-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--text);
+}
+
+/* ── Graph Legend ── */
+.graph-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 8px;
+  padding-left: 32px;
+}
+
+.graph-legend-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.graph-legend-cells {
+  display: flex;
+  gap: 2px;
+}
+
+.graph-legend-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .app-main {
+    padding: 20px 16px 40px;
+    gap: 20px;
+  }
+
+  .trackers-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .header-date {
+    display: none;
+  }
+
+  .graph-cell {
+    width: 9px;
+    height: 9px;
+  }
+
+  .graph-month-label {
+    width: 9px;
+  }
+
+  .graph-day-label {
+    height: 9px;
+    line-height: 9px;
+  }
+
+  .graph-legend-cell {
+    width: 9px;
+    height: 9px;
+  }
+
+  .graph-card {
+    padding: 16px 16px 12px;
+  }
+
+  .tracker-card-header {
+    padding: 14px 16px 12px;
+  }
+
+  .habit-row,
+  .todo-row {
+    padding: 10px 16px;
+  }
+
+  .add-input-area {
+    padding: 10px 16px;
+  }
+
+  /* Always show delete on mobile */
+  .delete-btn {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-main {
+    padding: 16px 12px 32px;
+  }
+
+  .graph-card {
+    padding: 12px 12px 10px;
+  }
+}
