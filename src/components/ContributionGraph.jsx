@@ -27,7 +27,7 @@ function getLevel(count) {
   if (!count || count === 0) return 0
   if (count <= 2) return 1
   if (count <= 4) return 2
-  if (count <= 7) return 3
+  if (count <= 5) return 3
   return 4
 }
 
