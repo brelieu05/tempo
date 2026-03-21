@@ -520,6 +520,8 @@ body {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
+  display: flex;
+  justify-content: center;
 }
 
 .graph-inner {
