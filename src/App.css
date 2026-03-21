@@ -788,6 +788,135 @@ body {
   cursor: not-allowed;
 }
 
+/* ── Settings ── */
+.settings-card {
+  padding: 24px;
+}
+
+.settings-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.settings-description {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-time-input {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  outline: none;
+}
+
+.settings-time-input:focus {
+  border-color: var(--orange);
+}
+
+.settings-save-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  background: var(--orange);
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.settings-save-btn:hover {
+  background: var(--orange-hover);
+}
+
+.reminders-list {
+  list-style: none;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reminder-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.reminder-time {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--orange);
+  min-width: 42px;
+}
+
+.reminder-label {
+  font-size: 14px;
+  color: var(--text);
+  flex: 1;
+}
+
+.reminder-delete-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.reminder-delete-btn:hover {
+  color: var(--text);
+}
+
+.reminder-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.reminder-label-input {
+  flex: 1;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  outline: none;
+}
+
+.reminder-label-input:focus {
+  border-color: var(--orange);
+}
+
+.reminder-label-input::placeholder {
+  color: var(--text-muted);
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .app-main {

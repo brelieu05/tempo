@@ -3,7 +3,9 @@ import ContributionGraph from './components/ContributionGraph.jsx'
 import HabitTracker from './components/HabitTracker.jsx'
 import TodoList from './components/TodoList.jsx'
 import Login from './components/Login.jsx'
+import Settings from './components/Settings.jsx'
 import { apiFetch } from './api.js'
+import { registerPush } from './push.js'
 
 function today() {
   const d = new Date()
@@ -15,6 +17,7 @@ function today() {
 
 export default function App() {
   const [token, setToken] = useState(() => localStorage.getItem('token'))
+  const [page, setPage] = useState('home')
   const [habits, setHabits] = useState([])
   const [habitCompletions, setHabitCompletions] = useState({})
   const [todos, setTodos] = useState([])
@@ -58,6 +61,13 @@ export default function App() {
   useEffect(() => {
     if (token) fetchAll()
   }, [token, fetchAll])
+
+  useEffect(() => {
+    if (!token) return
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(() => registerPush())
+    }
+  }, [token])
 
   // ── Streak helper ──────────────────────────────────────────────────────────
   const getStreak = useCallback(
@@ -236,6 +246,10 @@ export default function App() {
     return <Login onLogin={handleLogin} />
   }
 
+  if (page === 'settings') {
+    return <Settings onBack={() => setPage('home')} />
+  }
+
   // Build todos map for today (TodoList expects { [date]: [todo, ...] } shape)
   const todosMap = { [todayStr]: todos }
 
@@ -256,6 +270,9 @@ export default function App() {
                 year: 'numeric',
               })}
             </div>
+            <button className="logout-btn" onClick={() => setPage('settings')} title="Settings">
+              Settings
+            </button>
             <button className="logout-btn" onClick={handleLogout} title="Sign out">
               Sign out
             </button>
