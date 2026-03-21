@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import ContributionGraph from './components/ContributionGraph.jsx'
 import HabitTracker from './components/HabitTracker.jsx'
 import TodoList from './components/TodoList.jsx'
@@ -23,6 +23,10 @@ export default function App() {
   const [todos, setTodos] = useState([])
   const [graphData, setGraphData] = useState({})
   const [loading, setLoading] = useState(true)
+  const [pullDistance, setPullDistance] = useState(0)
+  const [refreshing, setRefreshing] = useState(false)
+  const touchStartY = useRef(0)
+  const pulling = useRef(false)
 
   const todayStr = today()
 
@@ -61,6 +65,48 @@ export default function App() {
   useEffect(() => {
     if (token) fetchAll()
   }, [token, fetchAll])
+
+  useEffect(() => {
+    if (!token || page !== 'home') return
+
+    const THRESHOLD = 80
+
+    function onTouchStart(e) {
+      if (window.scrollY === 0) {
+        touchStartY.current = e.touches[0].clientY
+        pulling.current = true
+      }
+    }
+
+    function onTouchMove(e) {
+      if (!pulling.current) return
+      const dist = Math.max(0, e.touches[0].clientY - touchStartY.current)
+      if (dist > 0) setPullDistance(Math.min(dist, THRESHOLD * 1.5))
+    }
+
+    function onTouchEnd() {
+      if (!pulling.current) return
+      pulling.current = false
+      if (pullDistance >= THRESHOLD) {
+        setRefreshing(true)
+        fetchAll().finally(() => {
+          setRefreshing(false)
+          setPullDistance(0)
+        })
+      } else {
+        setPullDistance(0)
+      }
+    }
+
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchmove', onTouchMove, { passive: true })
+    window.addEventListener('touchend', onTouchEnd)
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [token, page, pullDistance, fetchAll])
 
   useEffect(() => {
     if (!token) return
@@ -253,8 +299,18 @@ export default function App() {
   // Build todos map for today (TodoList expects { [date]: [todo, ...] } shape)
   const todosMap = { [todayStr]: todos }
 
+  const THRESHOLD = 80
+
   return (
     <div className="app">
+      {pullDistance > 0 && (
+        <div
+          className="pull-indicator"
+          style={{ height: pullDistance, opacity: Math.min(pullDistance / THRESHOLD, 1) }}
+        >
+          <div className={`pull-spinner${refreshing || pullDistance >= THRESHOLD ? ' active' : ''}`} />
+        </div>
+      )}
       <header className="app-header">
         <div className="header-inner">
           <div className="header-logo">

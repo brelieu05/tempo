@@ -788,6 +788,115 @@ body {
   cursor: not-allowed;
 }
 
+/* ── Todo remind button ── */
+.todo-remind-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  opacity: 0;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: opacity 0.15s;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.todo-row:hover .todo-remind-btn {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .todo-remind-btn {
+    opacity: 1;
+  }
+}
+
+/* ── Reminder modal ── */
+.reminder-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+
+.reminder-modal {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 24px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reminder-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.reminder-modal-label {
+  font-size: 14px;
+  color: var(--text-muted);
+  border-left: 3px solid var(--orange);
+  padding-left: 10px;
+  line-height: 1.4;
+}
+
+.reminder-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.reminder-modal-cancel {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.reminder-modal-cancel:hover {
+  background: var(--surface-2);
+}
+
+/* ── Pull to refresh ── */
+.pull-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: height 0.1s ease;
+  background: var(--bg);
+}
+
+.pull-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--orange);
+  border-radius: 50%;
+  transition: border-top-color 0.2s;
+}
+
+.pull-spinner.active {
+  animation: spin 0.7s linear infinite;
+}
+
 /* ── Settings ── */
 .settings-card {
   padding: 24px;

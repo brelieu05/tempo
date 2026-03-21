@@ -1,4 +1,8 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
+import { TbBellPlus } from 'react-icons/tb'
+import { apiFetch } from '../api.js'
+
+const TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 function formatDisplayDate(dateStr) {
   if (!dateStr) return ''
@@ -11,6 +15,59 @@ function formatDisplayDate(dateStr) {
   })
 }
 
+function ReminderModal({ todo, onClose }) {
+  const now = new Date()
+  const defaultTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+  const [time, setTime] = useState(defaultTime)
+  const [saved, setSaved] = useState(false)
+  const modalRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (modalRef.current && !modalRef.current.contains(e.target)) onClose()
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
+  }, [onClose])
+
+  async function handleSave() {
+    const [hour, minute] = time.split(':').map(Number)
+    const id = `r_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+    await apiFetch('/api/reminders', {
+      method: 'POST',
+      body: JSON.stringify({ id, label: todo.text, hour, minute, timezone: TIMEZONE }),
+    })
+    setSaved(true)
+    setTimeout(onClose, 900)
+  }
+
+  return (
+    <div className="reminder-modal-backdrop">
+      <div className="reminder-modal" ref={modalRef}>
+        <div className="reminder-modal-title">Set reminder</div>
+        <div className="reminder-modal-label">{todo.text}</div>
+        <input
+          type="time"
+          className="settings-time-input"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          autoFocus
+        />
+        <div className="reminder-modal-actions">
+          <button className="reminder-modal-cancel" onClick={onClose}>Cancel</button>
+          <button className="settings-save-btn" onClick={handleSave}>
+            {saved ? 'Saved!' : 'Set reminder'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function TodoList({
   todos,
   today,
@@ -19,6 +76,7 @@ export default function TodoList({
   onDeleteTodo,
 }) {
   const [inputValue, setInputValue] = useState('')
+  const [reminderTodo, setReminderTodo] = useState(null)
 
   const todayTodos = todos[today] || []
   const completedCount = todayTodos.filter((t) => t.completed).length
@@ -40,6 +98,10 @@ export default function TodoList({
 
   return (
     <div className="tracker-card">
+      {reminderTodo && (
+        <ReminderModal todo={reminderTodo} onClose={() => setReminderTodo(null)} />
+      )}
+
       <div className="tracker-card-header">
         <h3 className="tracker-card-title">Today's Tasks</h3>
         <div className="tracker-card-meta">
@@ -74,6 +136,15 @@ export default function TodoList({
               <span className={`todo-text${todo.completed ? ' done' : ''}`}>
                 {todo.text}
               </span>
+
+              <button
+                className="todo-remind-btn"
+                onClick={() => setReminderTodo(todo)}
+                aria-label="Set reminder"
+                title="Set reminder"
+              >
+                <TbBellPlus size={15} />
+              </button>
 
               <button
                 className="delete-btn"
