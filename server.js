@@ -56,15 +56,12 @@ async function initDb() {
     CREATE TABLE IF NOT EXISTS notification_settings (
       id INT PRIMARY KEY DEFAULT 1,
       hour INT NOT NULL DEFAULT 9,
-      minute INT NOT NULL DEFAULT 0,
-      timezone TEXT NOT NULL DEFAULT 'UTC',
-      day_start_hour INT NOT NULL DEFAULT 0,
-      day_start_minute INT NOT NULL DEFAULT 0
+      minute INT NOT NULL DEFAULT 0
     );
-    INSERT INTO notification_settings (id, hour, minute, timezone, day_start_hour, day_start_minute) VALUES (1, 9, 0, 'UTC', 0, 0) ON CONFLICT DO NOTHING;
     ALTER TABLE notification_settings ADD COLUMN IF NOT EXISTS timezone TEXT NOT NULL DEFAULT 'UTC';
     ALTER TABLE notification_settings ADD COLUMN IF NOT EXISTS day_start_hour INT NOT NULL DEFAULT 0;
     ALTER TABLE notification_settings ADD COLUMN IF NOT EXISTS day_start_minute INT NOT NULL DEFAULT 0;
+    INSERT INTO notification_settings (id, hour, minute, timezone, day_start_hour, day_start_minute) VALUES (1, 9, 0, 'UTC', 0, 0) ON CONFLICT DO NOTHING;
 
     CREATE TABLE IF NOT EXISTS reminders (
       id TEXT PRIMARY KEY,
