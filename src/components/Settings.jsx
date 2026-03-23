@@ -18,15 +18,20 @@ function fromTimeString(str) {
 
 export default function Settings({ onBack }) {
   const [dailyTime, setDailyTime] = useState('09:00')
+  const [dayStartTime, setDayStartTime] = useState('00:00')
   const [reminders, setReminders] = useState([])
   const [newLabel, setNewLabel] = useState('')
   const [newTime, setNewTime] = useState('09:00')
   const [saved, setSaved] = useState(false)
+  const [dayStartSaved, setDayStartSaved] = useState(false)
 
   useEffect(() => {
     apiFetch('/api/notification-settings')
       .then((r) => r.json())
-      .then((d) => setDailyTime(toTimeString(d.hour, d.minute)))
+      .then((d) => {
+        setDailyTime(toTimeString(d.hour, d.minute))
+        setDayStartTime(toTimeString(d.day_start_hour ?? 0, d.day_start_minute ?? 0))
+      })
 
     apiFetch('/api/reminders')
       .then((r) => r.json())
@@ -35,12 +40,24 @@ export default function Settings({ onBack }) {
 
   async function saveDailyTime() {
     const { hour, minute } = fromTimeString(dailyTime)
+    const { hour: dsh, minute: dsm } = fromTimeString(dayStartTime)
     await apiFetch('/api/notification-settings', {
       method: 'POST',
-      body: JSON.stringify({ hour, minute, timezone: TIMEZONE }),
+      body: JSON.stringify({ hour, minute, timezone: TIMEZONE, day_start_hour: dsh, day_start_minute: dsm }),
     })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  async function saveDayStart() {
+    const { hour, minute } = fromTimeString(dailyTime)
+    const { hour: dsh, minute: dsm } = fromTimeString(dayStartTime)
+    await apiFetch('/api/notification-settings', {
+      method: 'POST',
+      body: JSON.stringify({ hour, minute, timezone: TIMEZONE, day_start_hour: dsh, day_start_minute: dsm }),
+    })
+    setDayStartSaved(true)
+    setTimeout(() => setDayStartSaved(false), 2000)
   }
 
   async function addReminder(e) {
@@ -102,6 +119,25 @@ export default function Settings({ onBack }) {
               />
               <button className="settings-save-btn" onClick={saveDailyTime}>
                 {saved ? 'Saved!' : 'Save'}
+              </button>
+            </div>
+          </div>
+
+          {/* Day start */}
+          <div className="card settings-card" style={{ marginTop: 16 }}>
+            <div className="settings-section-title">Day starts at</div>
+            <p className="settings-description">
+              Habits and tasks completed after midnight but before this time will count for the previous day.
+            </p>
+            <div className="settings-row">
+              <input
+                type="time"
+                className="settings-time-input"
+                value={dayStartTime}
+                onChange={(e) => setDayStartTime(e.target.value)}
+              />
+              <button className="settings-save-btn" onClick={saveDayStart}>
+                {dayStartSaved ? 'Saved!' : 'Save'}
               </button>
             </div>
           </div>

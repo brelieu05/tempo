@@ -7,11 +7,16 @@ import Settings from './components/Settings.jsx'
 import { apiFetch } from './api.js'
 import { registerPush } from './push.js'
 
-function today() {
-  const d = new Date()
-  const yyyy = d.getFullYear()
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  const dd = String(d.getDate()).padStart(2, '0')
+function getLogicalToday(dayStartHour = 0, dayStartMinute = 0) {
+  const now = new Date()
+  const nowMinutes = now.getHours() * 60 + now.getMinutes()
+  const startMinutes = dayStartHour * 60 + dayStartMinute
+  if (startMinutes > 0 && nowMinutes < startMinutes) {
+    now.setDate(now.getDate() - 1)
+  }
+  const yyyy = now.getFullYear()
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const dd = String(now.getDate()).padStart(2, '0')
   return `${yyyy}-${mm}-${dd}`
 }
 
@@ -23,12 +28,13 @@ export default function App() {
   const [todos, setTodos] = useState([])
   const [graphData, setGraphData] = useState({})
   const [loading, setLoading] = useState(true)
+  const [dayStart, setDayStart] = useState({ hour: 0, minute: 0 })
   const [pullDistance, setPullDistance] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
   const touchStartY = useRef(0)
   const pulling = useRef(false)
 
-  const todayStr = today()
+  const todayStr = getLogicalToday(dayStart.hour, dayStart.minute)
 
   function handleLogin(newToken) {
     localStorage.setItem('token', newToken)
@@ -44,17 +50,22 @@ export default function App() {
   const fetchAll = useCallback(async () => {
     setLoading(true)
     try {
-      const [habitsRes, completionsRes, todosRes, graphRes] = await Promise.all([
+      const [habitsRes, completionsRes, todosRes, graphRes, settingsRes] = await Promise.all([
         apiFetch('/api/habits'),
         apiFetch('/api/habit-completions'),
         apiFetch(`/api/todos?date=${todayStr}`),
         apiFetch('/api/graph-data'),
+        apiFetch('/api/notification-settings'),
       ])
 
       if (habitsRes.ok) setHabits(await habitsRes.json())
       if (completionsRes.ok) setHabitCompletions(await completionsRes.json())
       if (todosRes.ok) setTodos(await todosRes.json())
       if (graphRes.ok) setGraphData(await graphRes.json())
+      if (settingsRes.ok) {
+        const s = await settingsRes.json()
+        setDayStart({ hour: s.day_start_hour ?? 0, minute: s.day_start_minute ?? 0 })
+      }
     } catch {
       // Network error — leave state as-is
     } finally {

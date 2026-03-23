@@ -57,10 +57,14 @@ async function initDb() {
       id INT PRIMARY KEY DEFAULT 1,
       hour INT NOT NULL DEFAULT 9,
       minute INT NOT NULL DEFAULT 0,
-      timezone TEXT NOT NULL DEFAULT 'UTC'
+      timezone TEXT NOT NULL DEFAULT 'UTC',
+      day_start_hour INT NOT NULL DEFAULT 0,
+      day_start_minute INT NOT NULL DEFAULT 0
     );
-    INSERT INTO notification_settings (id, hour, minute, timezone) VALUES (1, 9, 0, 'UTC') ON CONFLICT DO NOTHING;
+    INSERT INTO notification_settings (id, hour, minute, timezone, day_start_hour, day_start_minute) VALUES (1, 9, 0, 'UTC', 0, 0) ON CONFLICT DO NOTHING;
     ALTER TABLE notification_settings ADD COLUMN IF NOT EXISTS timezone TEXT NOT NULL DEFAULT 'UTC';
+    ALTER TABLE notification_settings ADD COLUMN IF NOT EXISTS day_start_hour INT NOT NULL DEFAULT 0;
+    ALTER TABLE notification_settings ADD COLUMN IF NOT EXISTS day_start_minute INT NOT NULL DEFAULT 0;
 
     CREATE TABLE IF NOT EXISTS reminders (
       id TEXT PRIMARY KEY,
@@ -228,18 +232,20 @@ app.post('/api/push-subscribe', requireAuth, async (req, res) => {
 
 // ── Notification settings ────────────────────────────────────────────────────
 app.get('/api/notification-settings', requireAuth, async (req, res) => {
-  const { rows } = await pool.query('SELECT hour, minute FROM notification_settings WHERE id = 1')
-  res.json(rows[0] || { hour: 9, minute: 0 })
+  const { rows } = await pool.query('SELECT hour, minute, timezone, day_start_hour, day_start_minute FROM notification_settings WHERE id = 1')
+  res.json(rows[0] || { hour: 9, minute: 0, timezone: 'UTC', day_start_hour: 0, day_start_minute: 0 })
 })
 
 app.post('/api/notification-settings', requireAuth, async (req, res) => {
-  const { hour, minute, timezone } = req.body || {}
+  const { hour, minute, timezone, day_start_hour, day_start_minute } = req.body || {}
   if (hour === undefined || minute === undefined) {
     return res.status(400).json({ error: 'hour and minute are required' })
   }
   await pool.query(
-    'UPDATE notification_settings SET hour = $1, minute = $2, timezone = $3 WHERE id = 1',
-    [hour, minute, timezone || 'UTC']
+    `UPDATE notification_settings
+     SET hour = $1, minute = $2, timezone = $3, day_start_hour = $4, day_start_minute = $5
+     WHERE id = 1`,
+    [hour, minute, timezone || 'UTC', day_start_hour ?? 0, day_start_minute ?? 0]
   )
   res.json({ success: true })
 })
