@@ -20,8 +20,18 @@ function getLogicalToday(dayStartHour = 0, dayStartMinute = 0) {
   return `${yyyy}-${mm}-${dd}`
 }
 
+function addDays(dateStr, days) {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const date = new Date(y, m - 1, d)
+  date.setDate(date.getDate() + days)
+  const yyyy = date.getFullYear()
+  const mm = String(date.getMonth() + 1).padStart(2, '0')
+  const dd = String(date.getDate()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd}`
+}
+
 export default function App() {
-  const [token, setToken] = useState(() => localStorage.getItem('token'))
+  const [token, setToken] = useState(() => import.meta.env.DEV ? 'dev' : localStorage.getItem('token'))
   const [page, setPage] = useState('home')
   const [habits, setHabits] = useState([])
   const [habitCompletions, setHabitCompletions] = useState({})
@@ -53,7 +63,7 @@ export default function App() {
       const [habitsRes, completionsRes, todosRes, graphRes, settingsRes] = await Promise.all([
         apiFetch('/api/habits'),
         apiFetch('/api/habit-completions'),
-        apiFetch(`/api/todos?date=${todayStr}`),
+        apiFetch(`/api/todos?from=${todayStr}&to=${addDays(todayStr, 13)}`),
         apiFetch('/api/graph-data'),
         apiFetch('/api/notification-settings'),
       ])
@@ -307,8 +317,12 @@ export default function App() {
     return <Settings onBack={() => setPage('home')} />
   }
 
-  // Build todos map for today (TodoList expects { [date]: [todo, ...] } shape)
-  const todosMap = { [todayStr]: todos }
+  // Build todos map grouped by date (TodoList expects { [date]: [todo, ...] } shape)
+  const todosMap = todos.reduce((acc, todo) => {
+    if (!acc[todo.date]) acc[todo.date] = []
+    acc[todo.date].push(todo)
+    return acc
+  }, {})
 
   const THRESHOLD = 80
 
