@@ -1,0 +1,29 @@
+server.js
+  f5f4ef949cc9482b 159-167
+src/App.jsx
+  f5f4ef949cc9482b 23-32,66,320-325
+src/components/TodoList.jsx
+  f5f4ef949cc9482b 7-16,28-32,88-120,133,136-140,145-148,150-152,156,158,167-171,199-205,218-248,250-276
+src/App.css
+  f5f4ef949cc9482b 452,454-493,499-522,524-529
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "5305e4e027561ba980068b650aa8e8a7d865e564",
+  "prompts": {
+    "f5f4ef949cc9482b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3b08f3ba-7400-480b-97c4-398a338f675f",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Brendan Lieu",
+      "messages": [],
+      "total_additions": 242,
+      "total_deletions": 57,
+      "accepted_lines": 242,
+      "overriden_lines": 0
+    }
+  }
+}
