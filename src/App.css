@@ -453,6 +453,11 @@ body {
   gap: 8px;
 }
 
+.add-input-area:not(:has(.day-picker)) {
+  flex-direction: row;
+  align-items: center;
+}
+
 .day-picker {
   display: flex;
   gap: 6px;
